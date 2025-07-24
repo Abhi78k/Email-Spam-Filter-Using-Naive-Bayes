@@ -1,99 +1,63 @@
-# ✉️ Naive Bayes Spam Classifier
+# Naive Bayes Spam Classifier
 
-Used a [dataset](https://www.kaggle.com/datasets/abdallahwagih/spam-emails) from kaggle.
+This project is a simple spam detection system implemented in Python using the Naive Bayes algorithm with Laplace smoothing. It classifies messages as spam or ham based on learned word probabilities from a dataset.
 
-This project is a simple yet effective **spam detection system** built using Python and pandas. It uses the **Naive Bayes algorithm** with **Laplace smoothing** to classify user-input messages as either **spam** or **ham (normal)**.
+## Dataset
+- [Dataset](https://www.kaggle.com/datasets/abdallahwagih/spam-emails) used from kaggle.
+- File: `spam.csv`
+- Columns required:
 
-## 🔍 What It Does
+  - `Category`: contains labels (`spam` or `ham`)
+  - `Message`: contains the message text
 
-- Reads a dataset of labeled SMS messages (`spam.csv`)
-- Calculates prior probabilities and word frequencies for both spam and ham
-- Applies **log-based Naive Bayes classification** on new user input
-- Supports custom user input from the command line
-- Uses **Laplace smoothing** to handle unseen words
+## Features
 
-## 📄 Dataset
+- Manual implementation of Naive Bayes from scratch
+- Handles punctuation and case sensitivity
+- Applies Laplace smoothing to prevent zero probabilities
+- Accepts multi-line user input from the command line
 
-The script expects a CSV file named `spam.csv` with at least the following columns:
+## Preprocessing
 
-- `Category`: either `spam` or `ham`
-- `Message`: the text content of the message
+- Messages are tokenized after:
+  - Converting to lowercase
+  - Removing all punctuation using Python's `string.punctuation`
+- Words are split and counted separately for spam and ham categories
 
-Example:
+## Training
 
-```
-Category,Message
-ham,Go until jurong point...
-spam,Win a brand new car now!!!
-```
+- Calculates prior probabilities:
 
-## 🧠 How It Works
+  - `P(spam) = count(spam) / total`
+  - `P(ham) = count(ham) / total`
+- Builds frequency dictionaries for spam and ham messages
+- Computes conditional probabilities:
 
-- Removes punctuation and lowercases all words
-- Tokenizes and counts word frequencies in spam and ham messages separately
-- Uses the **Bag of Words** model with Laplace smoothing
-- Calculates:
+  - `P(word | spam)` and `P(word | ham)`
+- Stores these probabilities for use during classification
 
-  - `P(spam | message)` and `P(ham | message)`
-  - Selects the class with the higher probability
+## Classification Logic
 
-## ✅ Sample Input/Output
+- Prompts the user to input a message (supports multi-line input; press ENTER twice to finish)
+- For each word:
 
-```
-Enter your email (press ENTER twice to finish):
-Congratulations! You've won a free ticket to Bahamas!
-(click enter again)
+  - Applies Laplace smoothing:
 
-Spam mail!!
-```
+    - `P(word | class) = (count + 1) / (total words + vocabulary size)`
+  - Computes:
 
-Or:
+    - `log(P(spam)) + Σ log(P(word | spam))`
+    - `log(P(ham)) + Σ log(P(word | ham))`
+- Compares total log probabilities:
 
-```
-Enter your email (press ENTER twice to finish):
-Hey are we still meeting at 6pm today?
-(click enter again)
+  - If spam score > ham score → "Spam mail!!"
+  - Else → "Normal mail!!!"
 
-Normal mail!!!
-```
+## Requirements
 
-## 📦 Requirements
-
-- Python 3.x
 - pandas
+- Python 3.x
 
-### Install requirements:
+## License
 
-```bash
-pip install pandas
-```
-
-## 📁 File Structure
-
-```
-spamfilter.py     # Main script
-spam.csv               # Dataset file
-README.md              # This file
-```
-
-## 🧪 Techniques Used
-
-- Naive Bayes formula with logs:
-
-  - `log(P(spam)) + sum(log(P(word|spam)))`
-- Laplace smoothing:
-
-  - `(frequency + 1) / (total words + vocabulary size)`
-- Manual tokenization and frequency mapping
-
-## 🔧 Improvements You Could Add
-
-- Use `CountVectorizer` or `TfidfVectorizer` from `sklearn`
-- Split data into training and testing sets
-- Train on a larger dataset
-- Add GUI or web interface for input
-- Save model using `pickle` for faster reuse
-
-## 📝 License
-
-Open-source for learning and experimentation purposes.
+Open-source and free to use for educational purposes.
